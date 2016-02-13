@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>{% block title %}Willkommen!{% endblock %}</title>
+        <link rel="apple-touch-icon" href="{{asset('bundles/apple-touch.png')}}"/>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick-theme.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{asset('bundles/vertretungsplan/style.css')}}"/>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />{% block stylesheets %}{% endblock %} 
+    </head>
+    <body>
+        <div id="background"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <a href="#" onclick="toggleLeftColumn();" class="btn btn-default visible-xs visible-sm" style="position: fixed; left: 10px; bottom: 10px; z-index: 1000">Seitenleiste anzeigen</a>
+
+                <div id="leftColumn" class="col-md-4 hidden-xs hidden-sm">{% block leftColumnModules %}{% endblock %}
+                </div>
+
+                <div id="rightColumnBackground" class="col-md-8 col-md-offset-4"></div>
+                <div id="rightColumn" class="col-md-8 col-md-offset-4">{% block rightColumnModules %}{% endblock %}
+                </div>
+
+            </div> 
+        </div>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js" ></script>
+        <script type="text/javascript" src="{{asset('bundles/slick/slick.min.js')}}" ></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                if ($(document).height() > $(window).height()) {
+                    // We need to duplicate the whole body of the website so if you scroll down you can see both the bottom and the top at the same time. Before we do this we need to know the original height of the website.
+                    var origDocHeight = document.body.offsetHeight;
+                    // now we know the height we can duplicate the body    
+                    $("#rightColumn").contents().clone().appendTo("#rightColumn");
+                    $(document).scroll(function () { // detect scrolling
+                        var scrollWindowPos = $(document).scrollTop(); // store how far we have scrolled
+
+                        if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
+                            $(document).scrollTop(0); // then scroll to the top
+                        }
+                    });
+                }
+
+                startTime();
+                setDate();
+            });
+
+            function startTime() {
+                var today = new Date();
+                var h = today.getHours();
+                var m = today.getMinutes();
+                var s = today.getSeconds();
+                m = checkTime(m);
+                s = checkTime(s);
+                $('#clock').html(h + ":" + m + ":" + s);
+                setTimeout(startTime, 500);
+            }
+
+            function setDate() {
+                var today = new Date();
+                var s = today.getDay();
+                var d = checkTime(today.getDate());
+                var m = checkTime(today.getMonth() + 1);
+                var y = today.getFullYear();
+                var tag = '';
+                switch (s) {
+                    case 1:
+                        tag = 'Montag';
+                        break;
+                    case 2:
+                        tag = 'Dienstag';
+                        break;
+                    case 3:
+                        tag = 'Mittwoch';
+                        break;
+                    case 4:
+                        tag = 'Donnerstag';
+                        break;
+                    case 5:
+                        tag = 'Freitag';
+                        break;
+                    case 6:
+                        tag = 'Samstag';
+                        break;
+                    case 7:
+                        tag = 'Sonntag';
+                        break;
+                }
+                $('#date').html(tag + ', ' + d + '.' + m + '.' + y);
+            }
+
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                // add zero in front of numbers < 10
+                return i;
+            }
+
+            function toggleLeftColumn() {
+                if ($('#leftColumn').hasClass('hidden-xs')) {
+                    $('#leftColumn').removeClass('hidden-xs');
+                } else {
+                    $('#leftColumn').addClass('hidden-xs');
+                }
+                if ($('#leftColumn').hasClass('hidden-sm')) {
+                    $('#leftColumn').removeClass('hidden-sm');
+                } else {
+                    $('#leftColumn').addClass('hidden-sm');
+                }
+                $('#meldungen').slick('unslick');
+                makeslider();
+            }
+
+            function makeslider() {
+                $('#meldungen').slick({
+                    dots: true,
+                    infinite: true,
+                    speed: 500,
+                    fade: true,
+                    cssEase: 'linear',
+                    arrows: false,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    autoplaySpeed: 3500
+                });
+            }
+
+        </script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
