@@ -13,23 +13,32 @@ class VertretungsplanController extends Controller {
      */
     public function indexAction(Request $request) {
 
+        $dateformat = 'D, d.m.';
         // heute Freitag?
         if (\date('w', strtotime('tomorrow')) == 6) {
             $vertretungsplan_1 = $this->getVertretungen();
             $vertretungsplan_2 = $this->getVertretungen('next monday');
+            $date_1 = \date($dateformat);
+            $date_2 = \date($dateformat, strtotime('next monday'));
             // heute Samstag?
         } else if (\date('w', strtotime('today')) == 6 || \date('w', strtotime('today')) == 0) {
             $vertretungsplan_1 = $this->getVertretungen('next monday');
             $vertretungsplan_2 = $this->getVertretungen('next tuesday');
+            $date_1 = \date($dateformat, strtotime('next monday'));
+            $date_2 = \date($dateformat, strtotime('next tuesday'));
         } else {
             $vertretungsplan_1 = $this->getVertretungen();
             $vertretungsplan_2 = $this->getVertretungen('tomorrow');
+            $date_1 = \date($dateformat);
+            $date_2 = \date($dateformat, strtotime('tomorrow'));
         }
 
         return $this->render('vertretungsplan/schueler/index.html.twig', [
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
                     'vertretungen_1' => $vertretungsplan_1,
-                    'vertretungen_2' => $vertretungsplan_2
+                    'vertretungen_2' => $vertretungsplan_2,
+                    'date_1' => $date_1,
+                    'date_2' => $date_2,
         ]);
     }
 
