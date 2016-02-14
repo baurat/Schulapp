@@ -8,40 +8,84 @@ use Symfony\Component\HttpFoundation\Request;
 
 class VertretungsplanController extends Controller {
 
+    protected $vertretungsplan1;
+    protected $vertretungsplan2;
+
     /**
      * @Route("/schueler", name="schueler")
      */
     public function indexAction(Request $request) {
-
-        $dateformat = 'D, d.m.';
-        // heute Freitag?
-        if (\date('w', strtotime('tomorrow')) == 6) {
-            $vertretungsplan_1 = $this->getVertretungen();
-            $vertretungsplan_2 = $this->getVertretungen('next monday');
-            $date_1 = \date($dateformat);
-            $date_2 = \date($dateformat, strtotime('next monday'));
-            // heute Samstag?
-        } else if (\date('w', strtotime('today')) == 6 || \date('w', strtotime('today')) == 0) {
-            $vertretungsplan_1 = $this->getVertretungen('next monday');
-            $vertretungsplan_2 = $this->getVertretungen('next tuesday');
-            $date_1 = \date($dateformat, strtotime('next monday'));
-            $date_2 = \date($dateformat, strtotime('next tuesday'));
-        } else {
-            $vertretungsplan_1 = $this->getVertretungen();
-            $vertretungsplan_2 = $this->getVertretungen('tomorrow');
-            $date_1 = \date($dateformat);
-            $date_2 = \date($dateformat, strtotime('tomorrow'));
-        }
+        $this->prepareVertretungsplaene();
 
         return $this->render('vertretungsplan/schueler/index.html.twig', [
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
-                    'vertretungen_1' => $vertretungsplan_1,
-                    'vertretungen_2' => $vertretungsplan_2,
-                    'date_1' => $date_1,
-                    'date_2' => $date_2,
+                    'vertretungen_1' => $this->vertretungsplan1,
+                    'vertretungen_2' => $this->vertretungsplan2,
         ]);
     }
 
+    /**
+     * Holt die Datenbankeinträge des Vertretungsplans.
+     * @param String $day Ein in englischer Textform angegebenes Datum, z.B. 'today', 'next monday'.
+     * @param String $klasse Die Klassenbezeichnung, z.B. 5A oder 6B. Case-sensitive!
+     * @return Entity:Vertretungsplan Ein Vertretungsplan-Objekt mit Daten aus der Datenbank.
+     */
+    public function getVertretungen($day = 'today', $klasse = null) {
+        $date = \date('Y-m-d', strtotime($day));
+
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Vertretung');
+
+        $query = $repository->createQueryBuilder('v')
+                ->where('v.datum = :datum')
+                ->andWhere('v.stunde >= :stunde')
+                ->orderBy('CAST(v.klasse AS UNSIGNED)')
+                ->addOrderBy('v.klasse')
+                ->addOrderBy('CAST(v.stunde AS UNSIGNED)')
+                ->setParameter('datum', $date);
+        // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
+        
+        if ($day === 'today') {
+            $query->setParameter('stunde', $this->getAktuelleStunde());
+        } else {
+//            if($this->getAktuelleStunde() < 3.5) {
+//                return null;
+//            }
+            $query->setParameter('stunde', 1);
+        }
+
+        if ($klasse !== null) {
+            $query = $repository->andWhere('v.klasse = :klasse')->setParameter('klasse', $klasse);
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Plan-Logik: Ist heute normaler Werktag, Freitag oder Wochenende?
+     * Speichert die Vertretungsplan-Objekte in die Variablen.
+     */
+    public function prepareVertretungsplaene() {
+        switch (\date('w', strtotime('today'))) {
+            case 5:
+                $this->vertretungsplan1 = $this->getVertretungen();
+                $this->vertretungsplan2 = $this->getVertretungen('next monday');
+                break;
+            case 6:
+            case 0:
+                $this->vertretungsplan1 = $this->getVertretungen('next monday');
+                $this->vertretungsplan2 = $this->getVertretungen('next tuesday');
+                break;
+            default:
+                $this->vertretungsplan1 = $this->getVertretungen();
+                $this->vertretungsplan2 = $this->getVertretungen('tomorrow');
+                break;
+        }
+    }
+
+    /**
+     * Gleicht die Uhrzeit mit dem Stundenplan ab und gibt die entsprechende Schulstunde zurück.
+     * @return int Aktuelle Schulstunde.
+     */
     public function getAktuelleStunde() {
         $em = $this->getDoctrine()->getManager();
         $time = \date('H:i:s');
@@ -55,45 +99,11 @@ class VertretungsplanController extends Controller {
         $aktuelleStunde = $query->setMaxResults(1)->getOneOrNullResult();
 
         if (!$aktuelleStunde) {
-            // Über Schulzeit hinaus
+            // Uhrzeit ist nicht im Bereich des Stundenplans (keine Schulzeit).
             return 1;
         }
 
         return $aktuelleStunde;
-    }
-
-    public function getVertretungen($i = 'today', $klasse = null) {
-        // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
-        $em = $this->getDoctrine()->getManager();
-        $day = \date('Y-m-d', strtotime($i));
-
-        if ($klasse == null) {
-            $query = $em->createQuery('SELECT v '
-                            . 'FROM AppBundle:Vertretung v '
-                            . 'WHERE v.datum >= :today '
-                            . 'AND v.stunde >= :stunde '
-                            . 'ORDER BY CAST(v.klasse AS UNSIGNED), v.klasse, CAST(v.stunde AS UNSIGNED)')
-                    ->setParameter('today', $day);
-        } else {
-            $query = $em->createQuery('SELECT v '
-                            . 'FROM AppBundle:Vertretung v '
-                            . 'WHERE v.datum >= :today '
-                            . 'AND v.stunde >= :stunde '
-                            . 'AND v.klasse = :klasse '
-                            . 'ORDER BY CAST(v.klasse AS UNSIGNED), v.klasse, CAST(v.stunde AS UNSIGNED)')
-                    ->setParameter('today', $day)
-                    ->setParameter('klasse', $klasse);
-        }
-
-        if ($i == 'today') {
-            $query->setParameter('stunde', $this->getAktuelleStunde());
-        } else {
-            $query->setParameter('stunde', 1);
-        }
-
-        $vertretungen = $query->getResult();
-
-        return $vertretungen;
     }
 
 }
