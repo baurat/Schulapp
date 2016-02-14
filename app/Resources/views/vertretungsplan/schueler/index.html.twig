@@ -12,7 +12,8 @@
                     <th class="col-md-1">Std.</th>
                     <th class="col-md-3 hidden-xs">vertreten durch</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
-                    <th class="col-md-5"><span style="float: right" class="font-size-l">{{ date_1 }}</span></th> 
+{# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
+                    <th class="col-md-5"><span style="float: right" class="font-size-l">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
@@ -38,7 +39,7 @@
         </table>
     {% endif %}
     {% if vertretungen_2 %}
-        <table id="vertretungsplan_2" class="table vertretungen-green table-responsive font-size-m">
+        <table id="vertretungsplan_2" class="table vertretungen-green font-size-m borderless">
             <thead>
                 <tr>
                     <th class="col-md-1">Kl.</th>
@@ -46,7 +47,7 @@
                     <th class="col-md-1">Std.</th>
                     <th class="col-md-3 hidden-xs">vertreten durch</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
-                    <th class="col-md-5"><span style="float: right" class="font-size-l">{{ date_2 }}</span></th> 
+                    <th class="col-md-5"><span style="float: right" class="font-size-l">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
