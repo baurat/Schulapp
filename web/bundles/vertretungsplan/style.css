@@ -1,0 +1,164 @@
+/* 
+    Created on : 12.02.2016, 17:20:24
+    Author     : Kevin
+*/
+
+/* Allgemeines Layout */
+body {
+    background: #255992;
+}
+
+#background {
+    position: fixed;
+    display: block;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-image: url('http://www.muellerschurr-architekten.de/referenzen/images/referenz-gymnasium_hohenschwangau_01.jpg'); 
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+    -webkit-filter: blur(6px);
+    -moz-filter: blur(6px);
+    -o-filter: blur(6px);
+    -ms-filter: blur(6px);
+    filter: blur(6px);
+}
+
+#rightColumnBackground {
+    background-color: rgba(189, 189, 189, 0.74) !important;
+    color: black;
+    z-index: 995;
+    position: fixed;
+    display: block;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+#rightColumn {
+    color: black;
+    z-index: 999;
+    padding-top: 15px;
+}
+
+#leftColumn {
+    background-color: rgba(37, 89, 146, 0.92) !important; 
+    color: white;
+    z-index: 1000;
+    position: fixed;
+    display: block;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding-bottom: 15px;
+    overflow: scroll; 
+    overflow-x: hidden;
+}
+
+#clockContainer {
+    margin-bottom: 10px;
+}
+
+/* Tabellen */
+tbody:nth-child(odd) {
+    background-color: #fff;
+}
+tbody:nth-child(even) {
+    background-color: #ccc;
+}
+
+table.borderless > tbody > tr > td, 
+table.borderless > tbody > tr > th, 
+table.borderless > tfoot > tr > td, 
+table.borderless > tfoot > tr > th, 
+table.borderless > thead > tr > td, 
+table.borderless > thead > tr > th,
+table.borderless > tbody + tbody {
+    border: none !important; 
+}
+
+table.vertretungen-blue > thead {
+    background-color: rgba(37, 89, 146, 0.9); 
+    color: white;
+}
+
+table.vertretungen-green > thead {
+    background-color: rgba(37, 146, 84, 0.9); 
+    color: white;
+}
+
+
+/* Schriftgrössen */ 
+.font-size-m {
+    font-size: 1em;
+}
+.font-size-l {
+    font-size: 1.1em;
+}
+.font-size-xl {
+    font-size: 1.5em;
+}
+
+
+@media (min-width: 768px) {
+    .font-size-m {
+        font-size: 1.1em;
+    }
+    .font-size-l {
+        font-size: 1.5em;
+    }
+    .font-size-xl {
+        font-size: 1.9em;
+    }
+}
+@media (min-width: 992px) {
+    .font-size-m {
+        font-size: 1.3em;
+    }
+    .font-size-l {
+        font-size: 1.8em;
+    }
+    .font-size-xl {
+        font-size: 2.3em;
+    }
+    #leftColumn {
+        top: 0px;
+        overflow: auto; 
+    }
+}
+@media (min-width: 1200px) {
+    .font-size-m {
+        font-size: 1.35em;
+    }
+    .font-size-l {
+        font-size: 1.8em;
+    }
+    .font-size-xl {
+        font-size: 2.8em;
+    }
+}
+@media (min-width: 1920px) {
+    .font-size-m {
+        font-size: 1.9em;
+    }
+    .font-size-l {
+        font-size: 2.8em;
+    }
+    .font-size-xl {
+        font-size: 3.7em;
+    }
+}
+@media (min-width: 2500px) {
+    .font-size-m {
+        font-size: 3em;
+    }
+    .font-size-l {
+        font-size: 4em;
+    }
+    .font-size-xl {
+        font-size: 5em;
+    }
+}
