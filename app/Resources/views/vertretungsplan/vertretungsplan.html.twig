@@ -59,7 +59,7 @@
                 $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
                 $viewport.animate({
                     scrollTop: $(document).height()
-                }, $(document).height() * 10, 'linear');
+                }, $(document).height() * 12, 'linear');
 
                 // Stop the animation if the user scrolls. Defaults on .stop() should be fine
                 $viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
