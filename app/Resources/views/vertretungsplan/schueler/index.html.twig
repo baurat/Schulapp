@@ -4,7 +4,7 @@
 
 {% block rightColumnModules %}
     {% if vertretungen_1 %}
-        <table id="vertretungsplan_1" class="table vertretungen-blue font-size-m borderless">
+        <table class="table vertretungen-blue font-size-m borderless">
             <thead>
                 <tr>
                     <th class="col-md-1">Kl.</th>
@@ -13,7 +13,7 @@
                     <th class="col-md-3 hidden-xs">vertreten durch</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
 {# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
-                    <th class="col-md-5"><span style="float: right" class="font-size-m">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                    <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
@@ -39,7 +39,7 @@
         </table>
     {% endif %}
     {% if vertretungen_2 %}
-        <table id="vertretungsplan_2" class="table vertretungen-green font-size-m borderless">
+        <table class="table vertretungen-green font-size-m borderless">
             <thead>
                 <tr>
                     <th class="col-md-1">Kl.</th>
@@ -47,7 +47,7 @@
                     <th class="col-md-1">Std.</th>
                     <th class="col-md-3 hidden-xs">vertreten durch</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
-                    <th class="col-md-5"><span style="float: right" class="font-size-m">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                    <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
@@ -128,11 +128,11 @@
     <script type="text/javascript" src="{{asset('bundles/jquery.floatThead.min.js')}}" ></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#vertretungsplan_1').floatThead({
+            $('.vertretungsplan-blue').floatThead({
                 position: 'fixed'
             });
 
-            $('#vertretungsplan_2').floatThead({
+            $('.vertretungsplan-green').floatThead({
                 position: 'fixed'
             });
 
