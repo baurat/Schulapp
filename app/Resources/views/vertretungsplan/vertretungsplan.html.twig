@@ -41,13 +41,33 @@
 
                         if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
                             $(document).scrollTop(15); // then scroll to the top
+                            scrollDown(); // Fahre fort mit herunterscrollen
                         }
                     });
                 }
 
                 startTime();
                 setDate();
+                scrollDown();
+
             });
+
+            function scrollDown() {
+                // Assign the HTML, Body as a variable...
+                var $viewport = $('html,body');
+
+                $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
+                $viewport.animate({
+                    scrollTop: $(document).height()
+                }, $(document).height() * 10, 'linear');
+
+                // Stop the animation if the user scrolls. Defaults on .stop() should be fine
+                $viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
+                    if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
+                        $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
+                    }
+                });
+            }
 
             function startTime() {
                 var today = new Date();
