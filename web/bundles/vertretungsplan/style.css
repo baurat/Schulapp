@@ -26,7 +26,7 @@ body {
 }
 
 #rightColumnBackground {
-    background-color: rgba(189, 189, 189, 0.74) !important;
+    background-color: rgba(57, 57, 57, 0.84) !important;
     color: black;
     z-index: 995;
     position: fixed;
@@ -37,10 +37,11 @@ body {
     left: 0px;
 }
 
-#rightColumn {
+#rightColumn,
+#rightColumn > div {
     color: black;
-    z-index: 999;
-    padding-top: 15px;
+    z-index: 999 !important;
+    /*padding-top: 15px;*/
 }
 
 #leftColumn {
@@ -63,11 +64,23 @@ body {
 }
 
 /* Tabellen */
-tbody:nth-child(odd) {
-    background-color: #fff;
+.vertretungen-blue, .vertretungen-green {
+    color: white
 }
-tbody:nth-child(even) {
-    background-color: #ccc;
+.vertretungen-blue td:nth-child(1), .vertretungen-green td:nth-child(1) {
+    font-weight: 600
+}
+.vertretungen-green tbody:nth-child(even) {
+    background-color: RGBA(53, 152, 96, 0.7);
+}
+.vertretungen-blue tbody:nth-child(odd) {
+    background-color: rgba(145, 175, 204, 0.7);
+}
+.vertretungen-blue tbody:nth-child(even) {
+    background-color: rgba(38, 90, 146, 0.7);
+}
+.vertretungen-green tbody:nth-child(odd) {
+    background-color: RGBA(99, 197, 142, 0.7);
 }
 
 table.borderless > tbody > tr > td, 
@@ -88,6 +101,10 @@ table.vertretungen-blue > thead {
 table.vertretungen-green > thead {
     background-color: rgba(37, 146, 84, 0.9); 
     color: white;
+}
+
+td {
+    padding: 3px !important;
 }
 
 
