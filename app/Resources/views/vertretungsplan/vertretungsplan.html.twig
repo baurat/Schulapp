@@ -18,16 +18,20 @@
             <div class="row">
                 <a href="#" onclick="toggleLeftColumn();" class="btn btn-default visible-xs visible-sm" style="position: fixed; left: 10px; bottom: 10px; z-index: 1000">Seitenleiste anzeigen</a>
 
-                <div id="leftColumn" class="col-md-4 hidden-xs hidden-sm">{% block leftColumnModules %}{% endblock %}
+                <div id="leftColumn" class="col-md-3 hidden-xs hidden-sm">{% block leftColumnModules %}{% endblock %}
                 </div>
 
-                <div id="rightColumnBackground" class="col-md-8 col-md-offset-4"></div>
-                <div id="rightColumn" class="col-md-8 col-md-offset-4">{% block rightColumnModules %}{% endblock %}
+                <div id="rightColumnBackground" class="col-md-9 col-md-offset-3"></div>
+                <div id="rightColumn" class="col-md-9 col-md-offset-3">
+                    <div class="row">
+                        <div id="1" class="col-md-6 {#col-md-offset-3#}">{% block table1 %}{% endblock %}</div>
+                        <div id="2" class="col-md-6 {#col-md-offset-3#}">{% block table2 %}{% endblock %}</div>
+                    </div>
                 </div>
-
             </div> 
         </div>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js" ></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js" ></script>
         <script type="text/javascript" src="{{asset('bundles/slick/slick.min.js')}}" ></script>
         <script type="text/javascript">
             $(document).ready(function () {
@@ -40,7 +44,7 @@
                         var scrollWindowPos = $(document).scrollTop(); // store how far we have scrolled
 
                         if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
-                            $(document).scrollTop(15); // then scroll to the top
+                            $(document).scrollTop(0); // then scroll to the top
                             scrollDown(); // Fahre fort mit herunterscrollen
                         }
                     });
@@ -53,20 +57,27 @@
             });
 
             function scrollDown() {
-                // Assign the HTML, Body as a variable...
-                var $viewport = $('html,body');
+                if ($(window).width() >= 1200) {
+                    // http://stackoverflow.com/questions/8858994/let-user-scrolling-stop-jquery-animation-of-scrolltop
+                    // Assign the HTML, Body as a variable...
+                    var $viewport = $('html,body');
 
-                $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
-                $viewport.animate({
-                    scrollTop: $(document).height()
-                }, $(document).height() * 12, 'linear');
+                    $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
+                    $viewport.animate({
+                        scrollTop: $(document).height()
+                    }, $(window).height() * 60, 'linear');
 
-                // Stop the animation if the user scrolls. Defaults on .stop() should be fine
-                $viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
-                    if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
-                        $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
-                    }
-                });
+                    // Stop the animation if the user scrolls. Defaults on .stop() should be fine
+                    $viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
+                        if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
+                            $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
+                            setTimeout(function () {
+                                scrollDown();
+                            }, 10000);
+
+                        }
+                    });
+                }
             }
 
             function startTime() {
