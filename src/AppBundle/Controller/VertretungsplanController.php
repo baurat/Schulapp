@@ -10,6 +10,7 @@ class VertretungsplanController extends Controller {
 
     protected $vertretungsplan1;
     protected $vertretungsplan2;
+    protected $speiseplan;
 
     /**
      * @Route("/schueler", name="schueler")
@@ -21,6 +22,9 @@ class VertretungsplanController extends Controller {
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
                     'vertretungen_1' => $this->vertretungsplan1,
                     'vertretungen_2' => $this->vertretungsplan2,
+                    'speiseplan' => $this->speiseplan,
+                    'meldungen' => $this->getMeldungen(),
+                    'std' => $this->getAktuelleStunde(),
         ]);
     }
 
@@ -38,12 +42,12 @@ class VertretungsplanController extends Controller {
         $query = $repository->createQueryBuilder('v')
                 ->where('v.datum = :datum')
                 ->andWhere('v.stunde >= :stunde')
-                ->orderBy('CAST(v.klasse AS UNSIGNED)')
-                ->addOrderBy('v.klasse')
+                ->orderBy('v.klasse')
+                ->addOrderBy('CAST(v.klasse AS UNSIGNED)')
                 ->addOrderBy('CAST(v.stunde AS UNSIGNED)')
                 ->setParameter('datum', $date);
         // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
-        
+
         if ($day === 'today') {
             $query->setParameter('stunde', $this->getAktuelleStunde());
         } else {
@@ -69,15 +73,18 @@ class VertretungsplanController extends Controller {
             case 5:
                 $this->vertretungsplan1 = $this->getVertretungen();
                 $this->vertretungsplan2 = $this->getVertretungen('next monday');
+                $this->speiseplan = $this->getSpeiseplan();
                 break;
             case 6:
             case 0:
                 $this->vertretungsplan1 = $this->getVertretungen('next monday');
                 $this->vertretungsplan2 = $this->getVertretungen('next tuesday');
+                $this->speiseplan = $this->getSpeiseplan('next monday');
                 break;
             default:
                 $this->vertretungsplan1 = $this->getVertretungen();
                 $this->vertretungsplan2 = $this->getVertretungen('tomorrow');
+                $this->speiseplan = $this->getSpeiseplan();
                 break;
         }
     }
@@ -103,7 +110,37 @@ class VertretungsplanController extends Controller {
             return 1;
         }
 
-        return $aktuelleStunde;
+        //var_dump((int)$aktuelleStunde->getStunde()); die;
+        return (int) $aktuelleStunde->getStunde();
+    }
+
+    public function getSpeiseplan($day = 'this monday') {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Speiseplan');
+        $kw = \date('W', strtotime($day));
+
+        $query = $repository->createQueryBuilder('s')
+                ->where('s.kalenderwoche = :kw')
+                ->setParameter('kw', $kw)
+                ->orderBy('s.id')
+                ->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function getMeldungen($day = 'today', $fuer_lehrer = 0) {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Meldung');
+        $date = \date('Y-m-d', strtotime($day));
+
+        $query = $repository->createQueryBuilder('m')
+                ->where('m.start_datum >= :dd')
+                ->andWhere('m.end_datum <= :dd')
+                ->andWhere('m.fuer_lehrer = :lehrer')
+                ->setParameter('dd', $date)
+                ->setParameter('lehrer', $fuer_lehrer)
+                ->orderBy('m.id')
+                ->getQuery();
+
+        return $query->getResult();
     }
 
 }
