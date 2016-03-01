@@ -2,17 +2,17 @@
 
 {% block title %}Schülervertretungsplan{% endblock %}
 
-{% block rightColumnModules %}
+{% block table1 %}
     {% if vertretungen_1 %}
         <table class="table vertretungen-blue font-size-m borderless">
             <thead>
                 <tr>
-                    <th class="col-md-1">Kl.</th>
-                    <th class="col-md-1">Lkr.</th>
-                    <th class="col-md-1">Std.</th>
-                    <th class="col-md-3 hidden-xs">vertreten durch</th>
+                    <th class="col-md-1 text-center">Kl.</th>
+                    <th class="col-md-1 text-center">Lkr.</th>
+                    <th class="col-md-1 text-center">Std.</th>
+                    <th class="col-md-3 hidden-xs">Vertretung</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
-{# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
+                        {# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
                     <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
@@ -21,14 +21,14 @@
                 {% if vertretung.klasse != vorherigeKlasse %}
                     <tbody>
                         <tr>
-                            <td>{{ vertretung.klasse }}</td>
+                            <td class="text-center">{{ vertretung.klasse }}</td>
                         {% else %}
                         <tr><td></td>
                         {% endif %}
-                        <td>{{ vertretung.lehrkraft }}</td>
-                        <td>{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                        <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                        <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
                         <td class="hidden-xs">{{ vertretung.vertretung }}</td>
-                        <td class="hidden-xs">{{ vertretung.raum }}</td>
+                        <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
                         <td>{{ vertretung.zusatz }}</td>
                     </tr>
                     {% set vorherigeKlasse = vertretung.klasse %}
@@ -38,14 +38,16 @@
             {% endfor %}
         </table>
     {% endif %}
+{% endblock %}
+{% block table2 %}
     {% if vertretungen_2 %}
         <table class="table vertretungen-green font-size-m borderless">
             <thead>
                 <tr>
-                    <th class="col-md-1">Kl.</th>
-                    <th class="col-md-1">Lkr.</th>
-                    <th class="col-md-1">Std.</th>
-                    <th class="col-md-3 hidden-xs">vertreten durch</th>
+                    <th class="col-md-1 text-center">Kl.</th>
+                    <th class="col-md-1 text-center">Lkr.</th>
+                    <th class="col-md-1 text-center">Std.</th>
+                    <th class="col-md-3 hidden-xs">Vertretung</th>
                     <th class="col-md-1 hidden-xs">Raum</th>
                     <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
@@ -55,14 +57,14 @@
                 {% if vertretung.klasse != vorherigeKlasse %}
                     <tbody>
                         <tr>
-                            <td>{{ vertretung.klasse }}</td>
+                            <td class="text-center">{{ vertretung.klasse }}</td>
                         {% else %}
                         <tr><td></td>
                         {% endif %}
-                        <td>{{ vertretung.lehrkraft }}</td>
-                        <td>{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                        <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                        <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
                         <td class="hidden-xs">{{ vertretung.vertretung }}</td>
-                        <td class="hidden-xs">{{ vertretung.raum }}</td>
+                        <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
                         <td>{{ vertretung.zusatz }}</td>
                     </tr>
                     {% set vorherigeKlasse = vertretung.klasse %}
@@ -88,14 +90,12 @@
         <div class="panel-heading font-size-m">Aktuelle Informationen</div>
         <div class="panel-body">
             <div id="meldungen" style="color: #000">
-                <div>
-                    <h1 class="font-size-l">Spanisch Kurs 1</h1>
-                    <p class="font-size-m">Pflichttreffen in der 5. Stunde vor dem Lehrerzimmer!</p>
-                </div>
-                <div>
-                    <h1 class="font-size-l">Orchester</h1>
-                    <p class="font-size-m">Die Probe findet heute im Raum E02 statt.</p>
-                </div>
+                {% for meldung in meldungen %}
+                    <div>
+                        <h1 class="font-size-l">{{ meldung.ueberschrift }}</h1>
+                        <p class="font-size-m">{{ meldung.meldung }}</p>
+                    </div>
+                {% endfor %}
                 <div>
                     <h1 class="font-size-l">Wichtige Mitteilung</h1>
                     <p class="font-size-m">Bitte nicht beachten. Das ist eine typische Meldung, die eher einem Roman gleicht, als einer Kurznachricht. 
@@ -110,11 +110,12 @@
         <div class="panel-body">
             <div style="color: #000">
                 <div>
-                    <p class="font-size-m">Mo: Nudeln</p>
-                    <p class="font-size-m">Di: Bratkartoffeln</p>
-                    <p class="font-size-m">Mi: Pizza</p>
-                    <p class="font-size-m">Do: Gemüseküchle</p>
-                    <p class="font-size-m">Fr: Kaiserschmarrn</p>
+                    {% for essen in speiseplan %}
+                        {# http://stackoverflow.com/questions/17498652/use-a-variable-in-twig-literal #}
+                        {% set var = '+' ~ loop.index0 ~ 'days' %}
+                        <p class="font-size-m">{{ "monday"| date_modify(var)|localizeddate('full', 'none', 'de', null, 'ccc')}}: {{ essen.mittagessen }}</p>
+                    {% endfor %}
+                    Aktuelle Stunde nach DB: {{ std }}
                 </div>
             </div>
         </div>
@@ -128,11 +129,7 @@
     <script type="text/javascript" src="{{asset('bundles/jquery.floatThead.min.js')}}" ></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.vertretungsplan-blue').floatThead({
-                position: 'fixed'
-            });
-
-            $('.vertretungsplan-green').floatThead({
+            $('table').floatThead({
                 position: 'fixed'
             });
 
