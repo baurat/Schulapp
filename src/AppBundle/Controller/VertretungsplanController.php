@@ -43,7 +43,7 @@ class VertretungsplanController extends Controller {
                 ->where('v.datum = :datum')
                 ->andWhere('v.stunde >= :stunde')
                 ->orderBy('v.klasse')
-                ->addOrderBy('klassenstufe(klasse)')
+                ->addOrderBy('CAST(v.klasse AS UNSIGNED)')
                 ->addOrderBy('CAST(v.stunde AS UNSIGNED)')
                 ->setParameter('datum', $date);
         // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
@@ -111,7 +111,7 @@ class VertretungsplanController extends Controller {
         }
 
         //var_dump((int)$aktuelleStunde->getStunde()); die;
-        return (int) $aktuelleStunde->getStunde();
+        return (int) 1; //$aktuelleStunde->getStunde();
     }
 
     public function getSpeiseplan($day = 'this monday') {

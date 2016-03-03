@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="meldungen")
+ * @ORM\Table(name="vert_meldungen")
  */
 class Meldung {
 

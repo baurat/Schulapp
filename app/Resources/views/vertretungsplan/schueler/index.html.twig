@@ -7,13 +7,13 @@
         <table class="table vertretungen-blue font-size-m borderless">
             <thead>
                 <tr>
-                    <th class="col-md-1 text-center">Kl.</th>
-                    <th class="col-md-1 text-center">Lkr.</th>
-                    <th class="col-md-1 text-center">Std.</th>
-                    <th class="col-md-3 hidden-xs">Vertretung</th>
-                    <th class="col-md-1 hidden-xs">Raum</th>
+                    <th class="col-xs-1 text-center">Kl.</th>
+                    <th class="col-xs-1 text-center">Lkr.</th>
+                    <th class="col-xs-1 text-center">Std.</th>
+                    <th class="col-xs-3 hidden-xs">Vertretung</th>
+                    <th class="col-xs-1 hidden-xs">Raum</th>
                         {# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
-                    <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                    <th class="col-xs-5"><span style="float: right" class="">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
@@ -44,12 +44,12 @@
         <table class="table vertretungen-green font-size-m borderless">
             <thead>
                 <tr>
-                    <th class="col-md-1 text-center">Kl.</th>
-                    <th class="col-md-1 text-center">Lkr.</th>
-                    <th class="col-md-1 text-center">Std.</th>
-                    <th class="col-md-3 hidden-xs">Vertretung</th>
-                    <th class="col-md-1 hidden-xs">Raum</th>
-                    <th class="col-md-5"><span style="float: right" class="">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                    <th class="col-xs-1 text-center">Kl.</th>
+                    <th class="col-xs-1 text-center">Lkr.</th>
+                    <th class="col-xs-1 text-center">Std.</th>
+                    <th class="col-xs-3 hidden-xs">Vertretung</th>
+                    <th class="col-xs-1 hidden-xs">Raum</th>
+                    <th class="col-xs-5"><span style="float: right" class="">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
                 </tr>
             </thead>
             {% set vorherigeKlasse = "" %}
@@ -130,10 +130,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('table').floatThead({
-                position: 'fixed'
+                position: 'absolute'
             });
 
             makeslider();
+        });
+        
+        $(window).resize(function() {
+            $('table').floatThead('reflow');
         });
     </script>
 {% endblock %}

@@ -6,7 +6,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <title>{% block title %}Willkommen!{% endblock %}</title>
         <link rel="apple-touch-icon" href="{{asset('bundles/apple-touch.png')}}"/>
-        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{asset('bootstrap/css/bootstrap.min.css')}}" />
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick-theme.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/vertretungsplan/style.css')}}"/>
@@ -24,13 +24,13 @@
                 <div id="rightColumnBackground" class="col-md-9 col-md-offset-3"></div>
                 <div id="rightColumn" class="col-md-9 col-md-offset-3">
                     <div class="row">
-                        <div id="1" class="col-md-6 {#col-md-offset-3#}">{% block table1 %}{% endblock %}</div>
-                        <div id="2" class="col-md-6 {#col-md-offset-3#}">{% block table2 %}{% endblock %}</div>
+                        <div id="1" class="col-lg-6">{% block table1 %}{% endblock %}</div>
+                        <div id="2" class="col-lg-6">{% block table2 %}{% endblock %}</div>
                     </div>
                 </div>
             </div> 
         </div>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js" ></script>
+        <script type="text/javascript" src="{{asset('bundles/jquery-2.2.1.min.js')}}" ></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js" ></script>
         <script type="text/javascript" src="{{asset('bundles/slick/slick.min.js')}}" ></script>
         <script type="text/javascript">
@@ -40,7 +40,7 @@
                     var origDocHeight = document.body.offsetHeight;
                     // now we know the height we can duplicate the body    
                     $("#rightColumn").contents().clone().appendTo("#rightColumn");
-                    $(document).scroll(function () { // detect scrolling
+                    $(document).scroll(function () { // detect scrolling                   
                         var scrollWindowPos = $(document).scrollTop(); // store how far we have scrolled
 
                         if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
@@ -62,13 +62,13 @@
                     // Assign the HTML, Body as a variable...
                     var $viewport = $('html,body');
 
-                    $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
+                    $viewport.stop().unbind('click scroll mousedown DOMMouseScroll mousewheel keyup');
                     $viewport.animate({
                         scrollTop: $(document).height()
                     }, $(window).height() * 60, 'linear');
 
                     // Stop the animation if the user scrolls. Defaults on .stop() should be fine
-                    $viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
+                    $viewport.bind("click scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
                         if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
                             $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
                             setTimeout(function () {
@@ -157,7 +157,7 @@
                     arrows: false,
                     slidesToScroll: 1,
                     autoplay: true,
-                    autoplaySpeed: 3500
+                    autoplaySpeed: 3000
                 });
             }
 

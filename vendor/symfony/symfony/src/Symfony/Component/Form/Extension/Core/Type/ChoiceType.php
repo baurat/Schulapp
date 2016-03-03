@@ -144,6 +144,14 @@ class ChoiceType extends AbstractType
                         $event->setData(null);
                     }
                 });
+                // For radio lists, pre selection of the choice needs to pre set data
+                // with the string value so it can be matched in
+                // {@link \Symfony\Component\Form\Extension\Core\DataMapper\RadioListMapper::mapDataToForms()}
+                $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                    $choiceList = $event->getForm()->getConfig()->getAttribute('choice_list');
+                    $value = current($choiceList->getValuesForChoices(array($event->getData())));
+                    $event->setData((string) $value);
+                });
             }
         } elseif ($options['multiple']) {
             // <select> tag with "multiple" option
@@ -203,15 +211,12 @@ class ChoiceType extends AbstractType
         }
 
         // Check if the choices already contain the empty value
-        $view->vars['placeholder_in_choices'] = 0 !== count($choiceList->getChoicesForValues(array('')));
+        $view->vars['placeholder_in_choices'] = $choiceListView->hasPlaceholder();
 
         // Only add the empty value option if this is not the case
         if (null !== $options['placeholder'] && !$view->vars['placeholder_in_choices']) {
             $view->vars['placeholder'] = $options['placeholder'];
         }
-
-        // BC
-        $view->vars['empty_value_in_choices'] = $view->vars['placeholder_in_choices'];
 
         if ($options['multiple'] && !$options['expanded']) {
             // Add "[]" to the name in case a select tag with multiple options is
@@ -279,6 +284,9 @@ class ChoiceType extends AbstractType
             if ($options['multiple']) {
                 // never use an empty value for this case
                 return;
+            } elseif ($options['required'] && ($options['expanded'] || isset($options['attr']['size']) && $options['attr']['size'] > 1)) {
+                // placeholder for required radio buttons or a select with size > 1 does not make sense
+                return;
             } elseif (false === $placeholder) {
                 // an empty value should be added but the user decided otherwise
                 return;
@@ -333,7 +341,7 @@ class ChoiceType extends AbstractType
         $resolver->setAllowedTypes('choices', array('null', 'array', '\Traversable'));
         $resolver->setAllowedTypes('choice_translation_domain', array('null', 'bool', 'string'));
         $resolver->setAllowedTypes('choice_loader', array('null', 'Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface'));
-        $resolver->setAllowedTypes('choice_label', array('null', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
+        $resolver->setAllowedTypes('choice_label', array('null', 'bool', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
         $resolver->setAllowedTypes('choice_name', array('null', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
         $resolver->setAllowedTypes('choice_value', array('null', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
         $resolver->setAllowedTypes('choice_attr', array('null', 'array', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));

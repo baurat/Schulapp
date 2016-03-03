@@ -41,6 +41,7 @@ body {
 #rightColumn > div {
     color: black;
     z-index: 999 !important;
+    overflow-x: hidden;
     /*padding-top: 15px;*/
 }
 

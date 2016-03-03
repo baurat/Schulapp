@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="stunden")
+ * @ORM\Table(name="vert_stunden")
  */
 class Stundenplan {
     /**

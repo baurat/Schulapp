@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mensaplan")
+ * @ORM\Table(name="vert_mensaplan")
  */
 class Speiseplan {
 
