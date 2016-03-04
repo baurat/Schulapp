@@ -111,7 +111,7 @@ class VertretungsplanController extends Controller {
         }
 
         //var_dump((int)$aktuelleStunde->getStunde()); die;
-        return (int) 1; //$aktuelleStunde->getStunde();
+        return (int) $aktuelleStunde->getStunde();
     }
 
     public function getSpeiseplan($day = 'this monday') {
