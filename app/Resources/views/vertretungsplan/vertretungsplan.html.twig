@@ -62,10 +62,14 @@
                     // Assign the HTML, Body as a variable...
                     var $viewport = $('html,body');
 
+                    var pixels_per_second = 80;
+                    var distance = $(document).height();
+                    var scroll_duration = (distance / pixels_per_second) * 1000;
+
                     $viewport.stop().unbind('click scroll mousedown DOMMouseScroll mousewheel keyup');
                     $viewport.animate({
                         scrollTop: $(document).height()
-                    }, $(window).height() * 60, 'linear');
+                    }, scroll_duration, 'linear');
 
                     // Stop the animation if the user scrolls. Defaults on .stop() should be fine
                     $viewport.bind("click scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
