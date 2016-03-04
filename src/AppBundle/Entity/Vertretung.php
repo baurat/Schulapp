@@ -32,7 +32,7 @@ class Vertretung {
     protected $lehrkraft;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="float")
      */
     protected $stunde;
 
