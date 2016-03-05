@@ -1,171 +1,293 @@
-<!DOCTYPE html>
-<html>
+{% extends layout %}
+
+{% block head %}
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <title>{% block title %}Willkommen!{% endblock %}</title>
+        <title>Vertretungsplan</title>
         <link rel="apple-touch-icon" href="{{asset('bundles/apple-touch.png')}}"/>
         <link rel="stylesheet" type="text/css" href="{{asset('bootstrap/css/bootstrap.min.css')}}" />
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/slick/slick-theme.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/vertretungsplan/style.css')}}"/>
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />{% block stylesheets %}{% endblock %} 
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
-        <div id="background"></div>
-        <div class="container-fluid">
-            <div class="row">
-                <a href="#" onclick="toggleLeftColumn();" class="btn btn-default visible-xs visible-sm" style="position: fixed; left: 10px; bottom: 10px; z-index: 1000">Seitenleiste anzeigen</a>
+{% endblock %}
 
-                <div id="leftColumn" class="col-md-3 hidden-xs hidden-sm">{% block leftColumnModules %}{% endblock %}
-                </div>
+{% block etc %}
+    <button type="button" class="btn btn-danger visible-xs visible-sm" aria-label="Schliessen" onclick="toggleLeftColumn();" style="position:absolute; top: 15px; right: 15px">
+        <span style="color:white!important">X</span>
+    </button>
+{% endblock %}
 
-                <div id="rightColumnBackground" class="col-md-9 col-md-offset-3"></div>
-                <div id="rightColumn" class="col-md-9 col-md-offset-3">
-                    <div class="row">
-                        <div id="1" class="col-lg-6">{% block table1 %}{% endblock %}</div>
-                        <div id="2" class="col-lg-6">{% block table2 %}{% endblock %}</div>
+{% block uhr %}
+    <div id="uhr_container" class="text-center">
+        <i class="glyphicon glyphicon-time font-size-m"></i>&nbsp;<span id="clock" class="font-size-xl"></span><br/>
+        <span id="date" class="font-size-m"></span>
+    </div>
+{% endblock %}
+
+{% block konto %}
+    <div id="konto_container">
+        <p>Willkommen zurück, {{ user.username }}</p>
+        <p><a class="btn btn-default" href="logout">Abmelden</a></p>
+    </div>
+{% endblock %}
+
+{% block mitteilungen %}
+    <div id="mitteilungen_container" class="panel panel-default ">
+        <div class="panel-heading font-size-m">Aktuelle Informationen</div>
+        <div class="panel-body">
+            <div id="meldungen" style="color: #000">
+                {% for meldung in meldungen %}
+                    <div>
+                        <h1 class="font-size-l">{{ meldung.ueberschrift }}</h1>
+                        <p class="font-size-m">{{ meldung.meldung }}</p>
                     </div>
+                {% endfor %}
+                <div>
+                    <h1 class="font-size-l">Wichtige Mitteilung</h1>
+                    <p class="font-size-m">Bitte nicht beachten. Das ist eine typische Meldung, die eher einem Roman gleicht, als einer Kurznachricht. 
+                        Eine Nachricht sollte nicht zu lang sein.</p>
                 </div>
-            </div> 
+            </div>
         </div>
-        <script type="text/javascript" src="{{asset('bundles/jquery-2.2.1.min.js')}}" ></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js" ></script>
-        <script type="text/javascript" src="{{asset('bundles/slick/slick.min.js')}}" ></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                if ($(document).height() > $(window).height()) {
-                    // We need to duplicate the whole body of the website so if you scroll down you can see both the bottom and the top at the same time. Before we do this we need to know the original height of the website.
-                    var origDocHeight = document.body.offsetHeight;
-                    // now we know the height we can duplicate the body    
-                    $("#rightColumn").contents().clone().appendTo("#rightColumn");
-                    $(document).scroll(function () { // detect scrolling                   
-                        var scrollWindowPos = $(document).scrollTop(); // store how far we have scrolled
+    </div>
+{% endblock %}
 
-                        if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
-                            $(document).scrollTop(0); // then scroll to the top
-                            scrollDown(); // Fahre fort mit herunterscrollen
-                        }
-                    });
-                }
+{% block mensaplan %}
+    <div id="mensaplan_container" class="panel panel-default">
+        <div class="panel-heading font-size-m">Mensaplan der Woche</div>
+        <div class="panel-body">
+            <div style="color: #000">
+                <div>
+                    {% for essen in speiseplan %}
+                        {# http://stackoverflow.com/questions/17498652/use-a-variable-in-twig-literal #}
+                        {% set var = '+' ~ loop.index0 ~ 'days' %}
+                        <p class="font-size-m">{{ "monday"| date_modify(var)|localizeddate('full', 'none', 'de', null, 'ccc')}}: {{ essen.mittagessen }}</p>
+                    {% endfor %}
+                    Aktuelle Stunde nach DB: {{ std }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-                startTime();
-                setDate();
-                scrollDown();
+{% block vertr_1 %}
+    {% if vertretungen_1 %}
+        <table class="table vertretungen-blue font-size-m borderless">
+            <thead>
+                <tr>
+                    <th class="col-xs-1 text-center">Kl.</th>
+                    <th class="col-xs-1 text-center">Lkr.</th>
+                    <th class="col-xs-1 text-center">Std.</th>
+                    <th class="col-xs-3 hidden-xs">Vertretung</th>
+                    <th class="col-xs-1 hidden-xs">Raum</th>
+                        {# http://stackoverflow.com/questions/17364206/symfony2-how-can-i-set-twig-dated-f-y-filter-to-output-months-in-swedish #}
+                    <th class="col-xs-5"><span style="float: right" class="">{{ vertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                </tr>
+            </thead>
+            {% set vorherigeKlasse = "" %}
+            {% for vertretung in vertretungen_1 %}
+                {% if vertretung.klasse != vorherigeKlasse %}
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{ vertretung.klasse }}</td>
+                        {% else %}
+                        <tr><td></td>
+                        {% endif %}
+                        <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                        <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                        <td class="hidden-xs">{{ vertretung.vertretung }}</td>
+                        <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
+                        <td>{{ vertretung.zusatz }}</td>
+                    </tr>
+                    {% set vorherigeKlasse = vertretung.klasse %}
+                    {% if vertretung.klasse != vorherigeKlasse %}
+                    </tbody>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}
 
-            });
+{% block vertr_2 %}
+    {% if vertretungen_2 %}
+        <table class="table vertretungen-green font-size-m borderless">
+            <thead>
+                <tr>
+                    <th class="col-xs-1 text-center">Kl.</th>
+                    <th class="col-xs-1 text-center">Lkr.</th>
+                    <th class="col-xs-1 text-center">Std.</th>
+                    <th class="col-xs-3 hidden-xs">Vertretung</th>
+                    <th class="col-xs-1 hidden-xs">Raum</th>
+                    <th class="col-xs-5"><span style="float: right" class="">{{ vertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                </tr>
+            </thead>
+            {% set vorherigeKlasse = "" %}
+            {% for vertretung in vertretungen_2 %}
+                {% if vertretung.klasse != vorherigeKlasse %}
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{ vertretung.klasse }}</td>
+                        {% else %}
+                        <tr><td></td>
+                        {% endif %}
+                        <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                        <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                        <td class="hidden-xs">{{ vertretung.vertretung }}</td>
+                        <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
+                        <td>{{ vertretung.zusatz }}</td>
+                    </tr>
+                    {% set vorherigeKlasse = vertretung.klasse %}
+                    {% if vertretung.klasse != vorherigeKlasse %}
+                    </tbody>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}
 
-            function scrollDown() {
-                if ($(window).width() >= 1200) {
-                    // http://stackoverflow.com/questions/8858994/let-user-scrolling-stop-jquery-animation-of-scrolltop
-                    // Assign the HTML, Body as a variable...
-                    var $viewport = $('html,body');
+{% block javascripts %}
+    <script type="text/javascript" src="{{asset('bundles/jquery-2.2.1.min.js')}}" ></script>
+    <script type="text/javascript" src="{{asset('bundles/jquery.floatThead.min.js')}}" ></script>
+    <script type="text/javascript" src="{{asset('bundles/slick/slick.min.js')}}" ></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($(document).height() > $(window).height()) {
+                // We need to duplicate the whole body of the website so if you scroll down you can see both the bottom and the top at the same time. Before we do this we need to know the original height of the website.
+                var origDocHeight = document.body.offsetHeight;
+                // now we know the height we can duplicate the body    
+                $("#vertr_container").contents().clone().appendTo("#vertr_container");
+                $(document).scroll(function () { // detect scrolling                   
+                    var scrollWindowPos = $(document).scrollTop(); // store how far we have scrolled
 
-                    var pixels_per_second = 75;
-                    var distance = $(document).height();
-                    var scroll_duration = (distance / pixels_per_second) * 1000;
-
-                    $viewport.stop().unbind('click scroll mousedown DOMMouseScroll mousewheel keyup');
-                    $viewport.animate({
-                        scrollTop: $(document).height()
-                    }, scroll_duration, 'linear');
-
-                    // Stop the animation if the user scrolls. Defaults on .stop() should be fine
-                    $viewport.bind("click scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
-                        if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
-                            $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
-                            setTimeout(function () {
-                                scrollDown();
-                            }, 10000);
-
-                        }
-                    });
-                }
-            }
-
-            function startTime() {
-                var today = new Date();
-                var h = today.getHours();
-                var m = today.getMinutes();
-                var s = today.getSeconds();
-                m = checkTime(m);
-                s = checkTime(s);
-                $('#clock').html(h + ":" + m + ":" + s);
-                setTimeout(startTime, 500);
-            }
-
-            function setDate() {
-                var today = new Date();
-                var s = today.getDay();
-                var d = checkTime(today.getDate());
-                var m = checkTime(today.getMonth() + 1);
-                var y = today.getFullYear();
-                var tag = '';
-                switch (s) {
-                    case 1:
-                        tag = 'Montag';
-                        break;
-                    case 2:
-                        tag = 'Dienstag';
-                        break;
-                    case 3:
-                        tag = 'Mittwoch';
-                        break;
-                    case 4:
-                        tag = 'Donnerstag';
-                        break;
-                    case 5:
-                        tag = 'Freitag';
-                        break;
-                    case 6:
-                        tag = 'Samstag';
-                        break;
-                    case 0:
-                        tag = 'Sonntag';
-                        break;
-                }
-                $('#date').html(tag + ', ' + d + '.' + m + '.' + y);
-            }
-
-            function checkTime(i) {
-                if (i < 10) {
-                    i = "0" + i;
-                }
-                // add zero in front of numbers < 10
-                return i;
-            }
-
-            function toggleLeftColumn() {
-                if ($('#leftColumn').hasClass('hidden-xs')) {
-                    $('#leftColumn').removeClass('hidden-xs');
-                } else {
-                    $('#leftColumn').addClass('hidden-xs');
-                }
-                if ($('#leftColumn').hasClass('hidden-sm')) {
-                    $('#leftColumn').removeClass('hidden-sm');
-                } else {
-                    $('#leftColumn').addClass('hidden-sm');
-                }
-                $('#meldungen').slick('unslick');
-                makeslider();
-            }
-
-            function makeslider() {
-                $('#meldungen').slick({
-                    dots: true,
-                    infinite: true,
-                    speed: 500,
-                    fade: true,
-                    cssEase: 'linear',
-                    arrows: false,
-                    slidesToScroll: 1,
-                    autoplay: true,
-                    autoplaySpeed: 3000
+                    if (scrollWindowPos >= origDocHeight) { // if we scrolled further then the original doc height
+                        $(document).scrollTop(0); // then scroll to the top
+                        scrollDown(); // Fahre fort mit herunterscrollen
+                    }
                 });
             }
 
-        </script>
-    {% block javascripts %}{% endblock %}
-</body>
-</html>
+            $('table').floatThead({
+                position: 'absolute'
+            });
+
+            makeslider();
+            startTime();
+            setDate();
+            scrollDown();
+
+        });
+
+        function scrollDown() {
+            if ($(window).width() >= 1200) {
+                // http://stackoverflow.com/questions/8858994/let-user-scrolling-stop-jquery-animation-of-scrolltop
+                // Assign the HTML, Body as a variable...
+                var $viewport = $('html,body');
+
+                var pixels_per_second = 75;
+                var distance = $(document).height();
+                var scroll_duration = (distance / pixels_per_second) * 1000;
+
+                $viewport.stop().unbind('click scroll mousedown DOMMouseScroll mousewheel keyup');
+                $viewport.animate({
+                    scrollTop: $(document).height()
+                }, scroll_duration, 'linear');
+
+                // Stop the animation if the user scrolls. Defaults on .stop() should be fine
+                $viewport.bind("click scroll mousedown DOMMouseScroll mousewheel keyup", function (e) {
+                    if (e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
+                        $viewport.stop().unbind('scroll mousedown DOMMouseScroll mousewheel keyup'); // This identifies the scroll as a user action, stops the animation, then unbinds the event straight after (optional)
+                        setTimeout(function () {
+                            scrollDown();
+                        }, 10000);
+
+                    }
+                });
+            }
+        }
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            $('#clock').html(h + ":" + m + ":" + s);
+            setTimeout(startTime, 500);
+        }
+
+        function setDate() {
+            var today = new Date();
+            var s = today.getDay();
+            var d = checkTime(today.getDate());
+            var m = checkTime(today.getMonth() + 1);
+            var y = today.getFullYear();
+            var tag = '';
+            switch (s) {
+                case 1:
+                    tag = 'Montag';
+                    break;
+                case 2:
+                    tag = 'Dienstag';
+                    break;
+                case 3:
+                    tag = 'Mittwoch';
+                    break;
+                case 4:
+                    tag = 'Donnerstag';
+                    break;
+                case 5:
+                    tag = 'Freitag';
+                    break;
+                case 6:
+                    tag = 'Samstag';
+                    break;
+                case 0:
+                    tag = 'Sonntag';
+                    break;
+            }
+            $('#date').html(tag + ', ' + d + '.' + m + '.' + y);
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            // add zero in front of numbers < 10
+            return i;
+        }
+
+        function toggleLeftColumn() {
+            if ($('#leftColumn').hasClass('hidden-xs')) {
+                $('#leftColumn').removeClass('hidden-xs');
+            } else {
+                $('#leftColumn').addClass('hidden-xs');
+            }
+            if ($('#leftColumn').hasClass('hidden-sm')) {
+                $('#leftColumn').removeClass('hidden-sm');
+            } else {
+                $('#leftColumn').addClass('hidden-sm');
+            }
+            $('#meldungen').slick('unslick');
+            makeslider();
+        }
+
+        function makeslider() {
+            $('#meldungen').slick({
+                dots: true,
+                infinite: true,
+                speed: 500,
+                fade: true,
+                cssEase: 'linear',
+                arrows: false,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 3000
+            });
+        }
+    </script>
+{% endblock %}
