@@ -16,8 +16,7 @@ body {
     right: 0px;
     left: 0px;
     background-image: url('http://www.muellerschurr-architekten.de/referenzen/images/referenz-gymnasium_hohenschwangau_01.jpg'); 
-    background-repeat: repeat-y;
-    background-size: 100% auto;
+    background-size:cover;
     -webkit-filter: blur(6px);
     -moz-filter: blur(6px);
     -o-filter: blur(6px);
