@@ -24,8 +24,8 @@ body {
     filter: blur(6px);
 }
 
-#rightColumnBackground {
-    background-color: rgba(57, 57, 57, 0.84) !important;
+/*#rightColumnBackground {
+    
     color: black;
     z-index: 995;
     position: fixed;
@@ -34,33 +34,40 @@ body {
     bottom: 0px;
     right: 0px;
     left: 0px;
-}
+}*/
 
-#rightColumn,
-#rightColumn > div {
+#vert_container,
+#vertr_container > div {
+    background-color: rgba(57, 57, 57, 0.84) !important;
     color: black;
     z-index: 999 !important;
     overflow-x: hidden;
     /*padding-top: 15px;*/
 }
 
-#leftColumn {
+#module_container {
     background-color: rgba(37, 89, 146, 0.92) !important; 
     color: white;
     z-index: 1000;
     position: fixed;
     display: block;
+    padding-bottom: 15px;
+    overflow: auto; 
+    overflow-x: hidden;
+}
+
+#module_container.layout1,
+#module_container.layout2 {
     top: 0px;
     left: 0px;
     right: 0px;
     bottom: 0px;
-    padding-bottom: 15px;
-    overflow: scroll; 
-    overflow-x: hidden;
 }
 
-#clockContainer {
-    margin-bottom: 10px;
+#uhr_container,
+#mensaplan_container, 
+#mitteilungen_container {
+    margin-bottom: 15px;
 }
 
 /* Tabellen */
