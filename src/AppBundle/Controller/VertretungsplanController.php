@@ -14,13 +14,16 @@ class VertretungsplanController extends Controller {
 
     /**
      * @Route("/schueler", name="schueler")
+     * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
         $this->denyAccessUnlessGranted('ROLE_USER', null, 'Keine Berechtigung für diese Seite!');
         $this->prepareVertretungsplaene();
 
         $user = $this->getUser();
-        return $this->render('vertretungsplan/schueler/index.html.twig', [
+        $layout = 'vertretungsplan/layouts/layout1.html.twig'; 
+        
+        return $this->render('vertretungsplan/vertretungsplan.html.twig', [
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
                     'vertretungen_1' => $this->vertretungsplan1,
                     'vertretungen_2' => $this->vertretungsplan2,
@@ -28,6 +31,7 @@ class VertretungsplanController extends Controller {
                     'meldungen' => $this->getMeldungen(),
                     'std' => $this->getAktuelleStunde(),
                     'user' => $user,
+                    'layout' => $layout,
         ]);
     }
 
