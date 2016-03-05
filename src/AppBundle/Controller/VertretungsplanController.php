@@ -16,8 +16,10 @@ class VertretungsplanController extends Controller {
      * @Route("/schueler", name="schueler")
      */
     public function indexAction(Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Keine Berechtigung für diese Seite!');
         $this->prepareVertretungsplaene();
 
+        $user = $this->getUser();
         return $this->render('vertretungsplan/schueler/index.html.twig', [
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
                     'vertretungen_1' => $this->vertretungsplan1,
@@ -25,6 +27,7 @@ class VertretungsplanController extends Controller {
                     'speiseplan' => $this->speiseplan,
                     'meldungen' => $this->getMeldungen(),
                     'std' => $this->getAktuelleStunde(),
+                    'user' => $user,
         ]);
     }
 
