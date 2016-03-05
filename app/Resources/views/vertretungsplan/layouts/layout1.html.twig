@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    {% block head %}
+    {% endblock %}
+    <body>
+        <div id="background"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="module_container" class="layout1 col-md-3 hidden-xs hidden-sm">
+                    {% block uhr %}
+                    {% endblock %}
+                    {% block mitteilungen %}
+                    {% endblock %}
+                    {% block mensaplan %}
+                    {% endblock %}
+                    {% block konto %}
+                    {% endblock %}
+                </div>
+                <div id="vertr_container" class="col-md-9 col-md-offset-3">
+                    <div class="row">
+                        <div id="1" class="col-lg-6">{% block vertr_1 %}{% endblock %}</div>
+                        <div id="2" class="col-lg-6">{% block vertr_2 %}{% endblock %}</div>
+                    </div>
+                </div>
+                {% block javascripts %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
