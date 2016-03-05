@@ -9,3 +9,13 @@ services:
         class: Twig_Extensions_Extension_Intl
         tags:
             - { name: twig.extension }
+            
+    app.form.registration:
+        class: UserBundle\Form\Registration
+        tags:
+            - { name: form.type, alias: app_user_registration }
+            
+    app.form.profile:
+        class: UserBundle\Form\Profile
+        tags:
+            - { name: form.type, alias: app_user_profile_edit }
