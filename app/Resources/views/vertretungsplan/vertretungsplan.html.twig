@@ -104,6 +104,38 @@
                         {% endif %}
                     {% endfor %}
                 </table>
+
+            {% elseif lehrervertretungen_1 %}
+                <table class="table vertretungen-blue font-size-m borderless">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-4 text-center">Lehrkraft</th>
+                            <th class="col-xs-1 text-center">Std.</th>
+                            <th class="col-xs-1 text-center">Kl.</th>
+                            <th class="col-xs-1 hidden-xs">Raum</th>
+                            <th class="col-xs-5"><span style="float: right" class="">{{ lehrervertretungen_1.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                        </tr>
+                    </thead>
+                    {% set vorherigeLehrkraft = "" %}
+                    {% for vertretung in lehrervertretungen_1 %}
+                        {% if vertretung.lehrkraft != vorherigeLehrkraft %}
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                                {% else %}
+                                <tr><td></td>
+                                {% endif %}
+                                <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                                <td class="text-center">{{ vertretung.klasse }}</td>
+                                <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
+                                <td>{{ vertretung.zusatz }}</td>
+                            </tr>
+                            {% set vorherigeLehrkraft = vertretung.lehrkraft %}
+                            {% if vertretung.lehrkraft != vorherigeLehrkraft %}
+                            </tbody>
+                        {% endif %}
+                    {% endfor %}
+                </table>
             {% endif %}
         {% endblock %}
 
@@ -137,6 +169,37 @@
                             </tr>
                             {% set vorherigeKlasse = vertretung.klasse %}
                             {% if vertretung.klasse != vorherigeKlasse %}
+                            </tbody>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            {% elseif lehrervertretungen_2 %}
+                <table class="table vertretungen-green font-size-m borderless">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-4 text-center">Lehrkraft</th>
+                            <th class="col-xs-1 text-center">Std.</th>
+                            <th class="col-xs-1 text-center">Kl.</th>
+                            <th class="col-xs-1 hidden-xs">Raum</th>
+                            <th class="col-xs-5"><span style="float: right" class="">{{ lehrervertretungen_2.0.datum|localizeddate('full', 'none', 'de', null, 'ccc, d.M') }}</span></th> 
+                        </tr>
+                    </thead>
+                    {% set vorherigeLehrkraft = "" %}
+                    {% for vertretung in lehrervertretungen_2 %}
+                        {% if vertretung.lehrkraft != vorherigeLehrkraft %}
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">{{ vertretung.lehrkraft }}</td>
+                                {% else %}
+                                <tr><td></td>
+                                {% endif %}
+                                <td class="text-center">{% if vertretung.stunde != '6.5' %} {{ vertretung.stunde }} {% else %} M {% endif %}</td>
+                                <td class="text-center">{{ vertretung.klasse }}</td>
+                                <td class="hidden-xs text-center">{{ vertretung.raum }}</td>
+                                <td>{{ vertretung.zusatz }}</td>
+                            </tr>
+                            {% set vorherigeLehrkraft = vertretung.lehrkraft %}
+                            {% if vertretung.lehrkraft != vorherigeLehrkraft %}
                             </tbody>
                         {% endif %}
                     {% endfor %}
