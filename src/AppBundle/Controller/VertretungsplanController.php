@@ -14,7 +14,6 @@ class VertretungsplanController extends Controller {
 
     /**
      * @Route("/schueler", name="schueler")
-     * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
         $this->denyAccessUnlessGranted('ROLE_USER', null, 'Keine Berechtigung für diese Seite!');
