@@ -5,7 +5,8 @@
 
 /* Allgemeines Layout */
 body {
-    background: #255992;
+    /*background: #255992;*/
+    background: #444444;
 }
 
 #background {
@@ -212,4 +213,8 @@ a, a:hover, a:active, a:focus {
     text-align:left;
     /* inline-block space fix */
     margin-right:-4px;
+}
+
+.white {
+    color: white;
 }
