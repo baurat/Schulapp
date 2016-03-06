@@ -1,16 +1,50 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <title>{% block title %}Willkommen!{% endblock %}</title>
-        <link rel="apple-touch-icon" href="{{asset('bundles/apple-touch.png')}}"/>
-        <link rel="stylesheet" type="text/css" href="{{asset('bootstrap/css/bootstrap.min.css')}}" />{% block stylesheets %}{% endblock %} 
-    </head>
-    <body>
-    {% block body %}{% endblock %}
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js" ></script>
-{% block javascripts %}{% endblock %}
-</body>
+    {% embed 'header.twig' %}
+        {% block title %}
+        {% endblock %}        
+    {% endembed %}
+    <body>        
+        {% block stylesheets %}
+        {% endblock %}
+        <div id="background"></div>
+        <div class="animsition">
+            {% block body %}
+            {% endblock %}
+        </div>
+        <script type="text/javascript" src="{{asset('assets/jquery-2.2.1.min.js')}}" ></script>
+        <script type="text/javascript" src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
+        <script type="text/javascript" src="{{ asset('assets/animsition/animsition.min.js') }}"></script>
+        {% block javascripts %}
+        {% endblock %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".animsition").animsition({
+                    inClass: 'fade-in',
+                    outClass: 'fade-out',
+                    inDuration: 1500,
+                    outDuration: 800,
+                    linkElement: 'a',
+                    // e.g. linkElement: 'a:not([target="_blank"]):not([href^=#])'
+                    loading: true,
+                    loadingParentElement: 'body', //animsition wrapper element
+                    loadingClass: 'animsition-loading',
+                    loadingInner: '', // e.g '<img src="loading.svg" />'
+                    timeout: false,
+                    timeoutCountdown: 5000,
+                    onLoadEvent: true,
+                    browser: ['animation-duration', '-webkit-animation-duration'],
+                    // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+                    // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+                    overlay: false,
+                    overlayClass: 'animsition-overlay-slide',
+                    overlayParentElement: 'body',
+                    transition: function (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        </script>
+
+    </body>
 </html>
