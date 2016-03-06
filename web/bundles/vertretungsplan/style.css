@@ -9,12 +9,7 @@ body {
 }
 
 #background {
-    position: fixed;
-    display: block;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
+    background-repeat: no-repeat;
     background-image: url('http://www.muellerschurr-architekten.de/referenzen/images/referenz-gymnasium_hohenschwangau_01.jpg'); 
     background-size:cover;
     -webkit-filter: blur(6px);
@@ -22,6 +17,10 @@ body {
     -o-filter: blur(6px);
     -ms-filter: blur(6px);
     filter: blur(6px);
+    min-height: 100%;
+    min-width: 100%;
+    z-index: -1;
+    position: fixed;
 }
 
 /*#rightColumnBackground {
@@ -47,6 +46,7 @@ body {
 
 #module_container {
     background-color: rgba(37, 89, 146, 0.92) !important; 
+    /*background-color: rgba(57, 57, 57, 0.84) !important;*/
     color: white;
     z-index: 1000;
     position: fixed;
@@ -166,10 +166,10 @@ td {
 }
 @media (min-width: 1920px) {
     .font-size-m {
-        font-size: 1.9em;
+        font-size: 1.8em;
     }
     .font-size-l {
-        font-size: 2.8em;
+        font-size: 2.7em;
     }
     .font-size-xl {
         font-size: 3.7em;
@@ -185,4 +185,31 @@ td {
     .font-size-xl {
         font-size: 5em;
     }
+}
+
+a, a:hover, a:active, a:focus {
+    color: #fff;
+    text-shadow: #000 0 0 25px;
+    text-decoration: none;
+}
+.app-container {
+    margin: 20px 0;
+    padding: 30px 0;
+    background-color: rgba(57, 57, 57, 0.84) !important;
+    width: 100%;
+    min-width: 100%;
+}
+
+/* http://www.minimit.com/articles/solutions-tutorials/bootstrap-3-responsive-centered-columns */
+/* centered columns styles */
+.row-centered, .row-centered > div {
+    text-align:center;
+}
+.col-centered {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align:left;
+    /* inline-block space fix */
+    margin-right:-4px;
 }
