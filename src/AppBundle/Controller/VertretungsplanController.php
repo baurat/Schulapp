@@ -10,22 +10,32 @@ class VertretungsplanController extends Controller {
 
     protected $vertretungsplan1;
     protected $vertretungsplan2;
+    protected $lehrer1;
+    protected $lehrer2;
     protected $speiseplan;
 
     /**
      * @Route("/schueler", name="schueler")
+     * @Route("/vertretungen", name="vertretungen")
+     * @Route("/vertretungsplan", name="vertretungsplan")
      */
     public function indexAction(Request $request) {
         $this->denyAccessUnlessGranted('ROLE_USER', null, 'Keine Berechtigung für diese Seite!');
-        $this->prepareVertretungsplaene();
-
         $user = $this->getUser();
-        $layout = 'vertretungsplan/layouts/layout1.html.twig'; 
-        
+        $layout = 'vertretungsplan/layouts/layout1.html.twig';
+
+        if (in_array('ROLE_TEACHER', $user->getRoles())) {
+            $this->prepareLehrerVertretungsplaene();
+        } else {
+            $this->prepareVertretungsplaene();
+        }
+
         return $this->render('vertretungsplan/vertretungsplan.html.twig', [
                     'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
                     'vertretungen_1' => $this->vertretungsplan1,
                     'vertretungen_2' => $this->vertretungsplan2,
+                    'lehrervertretungen_1' => $this->lehrer1,
+                    'lehrervertretungen_2' => $this->lehrer2,
                     'speiseplan' => $this->speiseplan,
                     'meldungen' => $this->getMeldungen(),
                     'std' => $this->getAktuelleStunde(),
@@ -69,6 +79,41 @@ class VertretungsplanController extends Controller {
 
         return $query->getQuery()->getResult();
     }
+    /**
+     * Holt die Datenbankeinträge des Vertretungsplans.
+     * @param String $day Ein in englischer Textform angegebenes Datum, z.B. 'today', 'next monday'.
+     * @param String $lehrkraft Die Lehrkraft
+     * @return Entity:Vertretungsplan Ein Vertretungsplan-Objekt mit Daten aus der Datenbank.
+     */
+    public function getLehrerVertretungen($day = 'today', $lehrkraft = null) {
+        $date = \date('Y-m-d', strtotime($day));
+
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Lehrervertretung');
+
+        $query = $repository->createQueryBuilder('v')
+                ->where('v.datum = :datum')
+                ->andWhere('v.stunde >= :stunde')
+                ->orderBy('v.lehrkraft')
+                ->addOrderBy('CAST(v.klasse AS UNSIGNED)')
+                ->addOrderBy('CAST(v.stunde AS UNSIGNED)')
+                ->setParameter('datum', $date);
+        // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
+
+        if ($day === 'today') {
+            $query->setParameter('stunde', $this->getAktuelleStunde());
+        } else {
+//            if($this->getAktuelleStunde() < 3.5) {
+//                return null;
+//            }
+            $query->setParameter('stunde', 1);
+        }
+
+        if ($lehrkraft !== null) {
+            $query = $repository->andWhere('v.lehrkraft = :lehrkraft')->setParameter('lehrkraft', $lehrkraft);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 
     /**
      * Plan-Logik: Ist heute normaler Werktag, Freitag oder Wochenende?
@@ -90,6 +135,31 @@ class VertretungsplanController extends Controller {
             default:
                 $this->vertretungsplan1 = $this->getVertretungen();
                 $this->vertretungsplan2 = $this->getVertretungen('tomorrow');
+                $this->speiseplan = $this->getSpeiseplan();
+                break;
+        }
+    }
+    
+    /**
+     * Plan-Logik: Ist heute normaler Werktag, Freitag oder Wochenende?
+     * Speichert die Vertretungsplan-Objekte in die Variablen.
+     */
+    public function prepareLehrerVertretungsplaene() {
+        switch (\date('w', strtotime('today'))) {
+            case 5:
+                $this->lehrer1 = $this->getLehrerVertretungen();
+                $this->lehrer2 = $this->getLehrerVertretungen('next monday');
+                $this->speiseplan = $this->getSpeiseplan();
+                break;
+            case 6:
+            case 0:
+                $this->lehrer1 = $this->getLehrerVertretungen('next monday');
+                $this->lehrer2 = $this->getLehrerVertretungen('next tuesday');
+                $this->speiseplan = $this->getSpeiseplan('next monday');
+                break;
+            default:
+                $this->lehrer1 = $this->getLehrerVertretungen();
+                $this->lehrer2 = $this->getLehrerVertretungen('tomorrow');
                 $this->speiseplan = $this->getSpeiseplan();
                 break;
         }
