@@ -3,14 +3,14 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block fos_user_content %}
-
+    <div id="background"></div>
     <div class="container">
         <div class="card card-container">
 
             <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
             <p id="profile-name" class="profile-name-card"></p>
 
-            <form class="form-signin" action="{{ path("fos_user_security_check") }}" method="post">
+            <form id="login" class="form-signin" action="{{ path("fos_user_security_check") }}" method="post">
                 {% if error %}
                     <p class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
                 {% endif %}
@@ -25,7 +25,7 @@
                         <input type="checkbox" id="remember_me" name="_remember_me" value="on" />{{ 'security.login.remember_me'|trans }}
                     </label>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
             </form>
             <a href="/resetting/request" class="forgot-password">
                 Passwort vergessen?
@@ -34,20 +34,29 @@
     </div>
 {% endblock fos_user_content %}
 
+{% block javascripts %}
+{% endblock %}
+
 {% block stylesheets %}
     {#    <link rel="stylesheet" type="text/css" href="https://getbootstrap.com/examples/signin/signin.css" />#}
     <style>
-        /*
-        * Specific styles of signin component
-        */
-        /*
-         * General styles
-         */
         body, html {
             height: 100%;
+        }
+
+        #background {
             background-repeat: no-repeat;
             background-image: url('http://www.muellerschurr-architekten.de/referenzen/images/referenz-gymnasium_hohenschwangau_01.jpg'); 
-            background-size:cover
+            background-size:cover;
+            -webkit-filter: blur(6px);
+            -moz-filter: blur(6px);
+            -o-filter: blur(6px);
+            -ms-filter: blur(6px);
+            filter: blur(6px);
+            min-height: 100%;
+            min-width: 100%;
+            z-index: -1;
+            position: fixed;
         }
 
         .card-container.card {
@@ -57,7 +66,6 @@
 
         .btn {
             font-weight: 700;
-            height: 36px;
             -moz-user-select: none;
             -webkit-user-select: none;
             user-select: none;
@@ -101,21 +109,6 @@
             text-align: center;
             margin: 10px 0 0;
             min-height: 1em;
-        }
-
-        .reauth-email {
-            display: block;
-            color: #404040;
-            line-height: 2;
-            margin-bottom: 10px;
-            font-size: 14px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
         }
 
         .form-signin #inputEmail,
