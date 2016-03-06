@@ -71,6 +71,7 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
+# http://symfony.com/doc/current/bundles/FOSUserBundle/configuration_reference.html
 fos_user:
     db_driver: orm
     firewall_name: main
