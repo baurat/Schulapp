@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% set page_title %}Willkommen{% endset %}
+
 {% block body %}
 
     {% embed 'menu.html.twig' %}
@@ -8,14 +10,16 @@
     <div class="app-container">
         <div class="row-centered ">
             <div class="col-md-2 col-centered">
-                <a href="vertretungen">
+                <a href="vertretungen" class="white special">
                     <img src="{{ asset('images/icons/app_vertr/Icon@2x.png') }}"/>
                     <h4>Vertretungsplan</h4>
                 </a>
             </div>
             <div class="col-md-2 col-centered">
-                <img src="{{ asset('images/icons/app_abs/Icon@2x.png') }}" class="sw"/>
-                <h4>Absenzen verwalten</h4>
+                <span class="white special">
+                    <img src="{{ asset('images/icons/app_abs/Icon@2x.png') }}" class="sw"/>
+                    <h4>Absenzen</h4>
+                </span>
             </div>
         </div>
     </div>
