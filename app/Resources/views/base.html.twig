@@ -2,7 +2,11 @@
 <html>
     {% embed 'header.twig' %}
         {% block title %}
-        {% endblock %}        
+            SVPlus
+            {% if page_title is defined %}
+                - {{ page_title }}
+            {% endif %}
+        {% endblock %}   
     {% endembed %}
     <body>        
         {% block stylesheets %}
@@ -24,7 +28,7 @@
                     outClass: 'fade-out',
                     inDuration: 1500,
                     outDuration: 800,
-                    linkElement: 'a',
+                    linkElement: 'a:not([target="_blank"])',
                     // e.g. linkElement: 'a:not([target="_blank"]):not([href^=#])'
                     loading: true,
                     loadingParentElement: 'body', //animsition wrapper element
