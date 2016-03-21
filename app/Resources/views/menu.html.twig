@@ -1,7 +1,9 @@
-<div class="container-fluid white">
+<div class="container-fluid white" style="margin-bottom: 20px;">
     <div class="row">
         <div class="col-xs-6 text-left">
-            <h1 class="hidden-xs hidden-sm">smanager <small class="white">Gymnasium Hohenschwangau</small></h1>
+            <a href="{{ path('homepage') }}" class="white special">
+                <h1 class="hidden-xs hidden-sm">SVPlus <small class="white">/// Gymnasium Hohenschwangau</small></h1>
+            </a>
         </div>
         <div class="col-xs-6 text-right" style="margin-top: 20px; margin-bottom: 10px;">
             <div class="btn-group">
@@ -11,8 +13,9 @@
                     <span class="caret"></span>
                 </p>
                 <ul class="dropdown-menu">
-                    <li><a href="profile">Mein Konto</a></li>
-                    <li><a href="logout">Abmelden</a></li>
+                    {# path('name_der_route') #}
+                    <li><a href="{{ path('fos_user_profile_show') }}">Mein Konto</a></li>
+                    <li><a href="{{ path('fos_user_security_logout') }}">Abmelden</a></li>
                 </ul>
             </div>
         </div>
