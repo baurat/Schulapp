@@ -58,11 +58,9 @@ class VertretungsplanController extends Controller {
         $query = $repository->createQueryBuilder('v')
                 ->where('v.datum = :datum')
                 ->andWhere('v.stunde >= :stunde')
-                ->orderBy('v.klasse')
-                ->addOrderBy('CAST(v.klasse AS UNSIGNED)')
+                ->addOrderBy('klassenstufe(v.klasse)')
                 ->addOrderBy('CAST(v.stunde AS UNSIGNED)')
                 ->setParameter('datum', $date);
-        // https://www.mpopp.net/2006/06/sorting-of-numeric-values-mixed-with-alphanumeric-values/
 
         if ($day === 'today') {
             $query->setParameter('stunde', $this->getAktuelleStunde());
