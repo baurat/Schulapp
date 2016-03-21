@@ -2,6 +2,8 @@
 
 {% trans_default_domain 'FOSUserBundle' %}
 
+{% set page_title %}Anmelden{% endset %}
+
 {% block fos_user_content %}
     <div id="background"></div>
     <div class="container">
@@ -27,7 +29,7 @@
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
             </form>
-            <a href="/resetting/request" class="forgot-password">
+            <a href="{{ path('fos_user_resetting_request') }}" class="forgot-password">
                 Passwort vergessen?
             </a>
         </div>
