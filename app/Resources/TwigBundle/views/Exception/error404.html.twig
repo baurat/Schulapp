@@ -1,0 +1,18 @@
+{# empty Twig template #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="white special">Die angeforderte Seite wurde nicht gefunden.<br/><small>Fehlercode 404</small></h1>
+
+        {# example security usage, see below #}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {# ... #}
+        {% endif %}
+
+        <p class="white special">
+            Bitte &uuml;berpr&uuml;fen Sie die URL oder kehren Sie zur Startseite zur&uuml;ck.
+        </p>
+        <p> <a class="btn btn-default" href="{{ path('homepage') }}">Startseite</a> </p>
+    </div>
+{% endblock %}
