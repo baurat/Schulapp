@@ -49,7 +49,7 @@ class Lehrervertretung {
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $lastUpdate;
+    protected $last_update;
 
     /**
      * Get id
