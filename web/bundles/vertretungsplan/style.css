@@ -188,8 +188,7 @@ td {
     }
 }
 
-a, a:hover, a:active, a:focus {
-    color: #fff;
+.special, .special:hover, .special:hover, .special:focus {
     text-shadow: #000 0 0 25px;
     text-decoration: none;
 }
@@ -215,6 +214,6 @@ a, a:hover, a:active, a:focus {
     margin-right:-4px;
 }
 
-.white {
+.white, .white:hover, .white:active, .white:focus {
     color: white;
 }
